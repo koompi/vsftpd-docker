@@ -13,8 +13,12 @@ This is a micro-service image for VSFTPD.
 The following environment variables are used.
 
 - `FTP_USER_*`: Adds multiple users. Value must be in the form of `username:'hash'`. This requires a hashed password such as the ones created with `mkpasswd -m sha-512`. **Required at least 1**
-- `PASV_MIN_PORT`: Control Passive Mode Minimum Ports. This requires the port mapped out, too, to work. *Default is 50000*
-- `PASV_MAX_PORT`: Control Passive Mode Maximum Ports. This requires the port mapped out, too, to work. *Default is 60100*
+- `PASV_MIN_PORT`: Control Passive Mode Minimum Ports. This requires the port mapped out, too, to work. **Default is 50000**
+- `PASV_MAX_PORT`: Control Passive Mode Maximum Ports. This requires the port mapped out, too, to work. **Default is 60100**
+- `PASV_ADDR_RESOLVE`: Enable or Disable Address Resolve to name. Accepted values are `YES` or `NO` **Default is NO**
+- `PASV_ADDRESS`: Control the address or hostname of the server. **Only Required if PASV_ADDR_RESOLVE is YES**
+- `IMPLICIT_SSL`: Enable or Disable IMPLICIT SSL mode. Accepted values are `YES` or `NO` **Default is NO**
+- `IMPLICIT_SSL_PORT`: Control IMPLICIT SSL mode Ports. This requires the port mapped out, too, to work. **Default is 990 if IMPLICIT_SSL is YES**
 
 The following mounts are used.
 
@@ -27,6 +31,7 @@ The following port are used.
 - 20 **Required**
 - 21 **Required**
 - PASV MIN/MAX Ports Range **Required**
+- IMPLICIT_SSL_PORT **Required If set**
 
 ## Usage Examples
 
@@ -56,6 +61,43 @@ isaacjacksonreay/vsftpd:latest
 -v `pwd`/adam/:/srv/vsftpd/adam/adam \
 -v `pwd`/abraham/:/srv/vsftpd/abraham/abraham \
 ...
+```
+
+## Implicit Example
+
+Default Port Example:
+```
+docker run -it \
+--name vsftpd \
+-v `pwd`/vsftpd.pem:/etc/ssl/certs/vsftpd.crt \
+-v `pwd`/vsftpd.pem:/etc/ssl/certs/vsftpd.key \
+-e PASV_MIN_PORT=1500 \
+-e PASV_MAX_PORT=1600 \
+-e FTP_USER_1=isaac:'$6$C138ihonnOEQzW4f$P8ZRSQ2rU8qU.6dUyBcXHj.4piADxEL0mQskpBeBTAtjxBMobTohykzsBG8cYShgu9ciUp59AxDFvsn2asH2X0' \
+-e IMPLICIT_SSL=YES
+-v `pwd`/isaac/:/srv/vsftpd/isaac/isaac \
+-p 20-21:20-21 \
+-p 1500-1600:1500-1600 \
+--restart=always \
+isaacjacksonreay/vsftpd:latest
+```
+
+Custom Port Example:
+```
+docker run -it \
+--name vsftpd \
+-v `pwd`/vsftpd.pem:/etc/ssl/certs/vsftpd.crt \
+-v `pwd`/vsftpd.pem:/etc/ssl/certs/vsftpd.key \
+-e PASV_MIN_PORT=1500 \
+-e PASV_MAX_PORT=1600 \
+-e FTP_USER_1=isaac:'$6$C138ihonnOEQzW4f$P8ZRSQ2rU8qU.6dUyBcXHj.4piADxEL0mQskpBeBTAtjxBMobTohykzsBG8cYShgu9ciUp59AxDFvsn2asH2X0' \
+-e IMPLICIT_SSL=YES
+-e IMPLICIT_SSL_PORT=9090
+-v `pwd`/isaac/:/srv/vsftpd/isaac/isaac \
+-p 20-21:20-21 \
+-p 1500-1600:1500-1600 \
+--restart=always \
+isaacjacksonreay/vsftpd:latest
 ```
 
 ## Development Note
