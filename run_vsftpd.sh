@@ -6,7 +6,9 @@ export PASV_ADDR_RESOLVE
 export PASV_ADDRESS
 export IMPLICIT_SSL
 export IMPLICIT_SSL_PORT
+export WRITE_ENABLE
 
+[[ "${WRITE_ENABLE}" == "NO" ]] && sed -i "s/write_enable=YES/write_enable=NO/g" /etc/vsftpd.conf
 [[ ! -z "${PASV_MIN_PORT}" ]] && sed -i "s/pasv_min_port=50000/pasv_min_port=${PASV_MIN_PORT}/g" /etc/vsftpd.conf
 [[ ! -z "${PASV_MAX_PORT}" ]] && sed -i "s/pasv_max_port=60100/pasv_max_port=${PASV_MAX_PORT}/g" /etc/vsftpd.conf
 [[ "${PASV_ADDR_RESOLVE}" == "YES" ]] && echo -e "\npasv_addr_resolve=YES\n" | tee -a /etc/vsftpd.conf
@@ -36,14 +38,16 @@ do
 
 done
 
+echo "Creating Users..."
+
 for VALUE in "${USER_ARR[@]}"
 do
     USERNAME=$(echo "${VALUE}" | awk -F':' '{printf $1}')
     chown vsftpd:vsftpd /srv/vsftpd/${USERNAME}/
     echo -e "${VALUE}\n" >> /etc/vsftpd/.passwd
-    echo "Created user:" $USERNAME
+    echo "User '"$USERNAME"' Created"
 done
 
-echo "Starting vsftpd..."
+echo "Starting Very Secure File Transfer Protocol Daemon..."
 
-/usr/bin/vsftpd
+/usr/bin/vsftpd 

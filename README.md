@@ -12,6 +12,7 @@ This is a micro-service image for VSFTPD.
 
 The following environment variables are used.
 
+- `WRITE_ENABLE`: Enable or Disable write access to the server. Accepted values are `YES` or `NO` **Default is YES**
 - `FTP_USER_*`: Adds multiple users. Value must be in the form of `username:'hash'`. This requires a hashed password such as the ones created with `mkpasswd -m sha-512`. **Required at least 1**
 - `PASV_MIN_PORT`: Control Passive Mode Minimum Ports. This requires the port mapped out, too, to work. **Default is 50000**
 - `PASV_MAX_PORT`: Control Passive Mode Maximum Ports. This requires the port mapped out, too, to work. **Default is 60100**
@@ -74,10 +75,11 @@ docker run -it \
 -e PASV_MIN_PORT=1500 \
 -e PASV_MAX_PORT=1600 \
 -e FTP_USER_1=isaac:'$6$C138ihonnOEQzW4f$P8ZRSQ2rU8qU.6dUyBcXHj.4piADxEL0mQskpBeBTAtjxBMobTohykzsBG8cYShgu9ciUp59AxDFvsn2asH2X0' \
--e IMPLICIT_SSL=YES
+-e IMPLICIT_SSL=YES \
 -v `pwd`/isaac/:/srv/vsftpd/isaac/isaac \
 -p 20-21:20-21 \
 -p 1500-1600:1500-1600 \
+-p 990:990 \
 --restart=always \
 isaacjacksonreay/vsftpd:latest
 ```
@@ -91,11 +93,12 @@ docker run -it \
 -e PASV_MIN_PORT=1500 \
 -e PASV_MAX_PORT=1600 \
 -e FTP_USER_1=isaac:'$6$C138ihonnOEQzW4f$P8ZRSQ2rU8qU.6dUyBcXHj.4piADxEL0mQskpBeBTAtjxBMobTohykzsBG8cYShgu9ciUp59AxDFvsn2asH2X0' \
--e IMPLICIT_SSL=YES
--e IMPLICIT_SSL_PORT=9090
+-e IMPLICIT_SSL=YES \
+-e IMPLICIT_SSL_PORT=9090 \
 -v `pwd`/isaac/:/srv/vsftpd/isaac/isaac \
 -p 20-21:20-21 \
 -p 1500-1600:1500-1600 \
+-p 9090:9090 \
 --restart=always \
 isaacjacksonreay/vsftpd:latest
 ```
