@@ -38,7 +38,7 @@ do
 
 done
 
-echo "Creating Users..."
+echo -e "\nCreating Users...\n"
 
 for VALUE in "${USER_ARR[@]}"
 do
@@ -48,6 +48,13 @@ do
     echo "User '"$USERNAME"' Created"
 done
 
-echo "Starting Very Secure File Transfer Protocol Daemon..."
+trap ctrl_c INT
 
-/usr/bin/vsftpd 
+function ctrl_c() {
+    echo -e " Signal Received\nStopping vsftpd.."
+    pgrep vsftpd | xargs kill
+}
+
+echo -e "\nStarting Very Secure File Transfer Protocol Daemon...\n"
+
+/usr/bin/vsftpd & wait
