@@ -10,7 +10,7 @@ This is a micro-service image for VSFTPD.
 
 ## Options
 
-The following environment variables are used.
+The following environment variables are used.   
 
 - `WRITE_ENABLE`: Enable or Disable write access to the server. Accepted values are `YES` or `NO` **Default is YES**
 - `FTP_USER_*`: Adds multiple users. Value must be in the form of `username:'hash'`. This requires a hashed password such as the ones created with `mkpasswd -m sha-512`. **Required at least 1**
@@ -102,6 +102,30 @@ docker run -it \
 --restart=always \
 isaacjacksonreay/vsftpd:latest
 ```
+
+## Docker-Compose Example
+
+```
+version: '3.8'
+services:
+  vsftp:
+    image: "isaacjacksonreay/vsftpd:latest"
+    ports:
+      - "990:990"
+      - "10000-10100:10000-10100"
+    volumes:
+      - /path/to/folder1:/srv/vsftpd/isaac/folder:ro
+      - /path/to/vsftpd.pem:/etc/ssl/certs/vsftpd.crt:ro
+      - /path/to/vsftpd.pem:/etc/ssl/certs/vsftpd.key:ro
+    environment:
+      - WRITE_ENABLE=NO
+      - FTP_USER_1=isaac:$$6$$C138ihonnOEQzW4f$$P8ZRSQ2rU8qU.6dUyBcXHj.4piADxEL0mQskpBeBTAtjxBMobTohykzsBG8cYShgu9ciUp59AxDFvsn2asH2X0
+      - PASV_MIN_PORT=10000
+      - PASV_MAX_PORT=10100
+      - IMPLICIT_SSL=YES
+```
+
+**Note:** All `**Dollar Sign**` in SHA-512 hash password must be escaped by adding another `**Dollar Sign**`
 
 ## Development Note
 

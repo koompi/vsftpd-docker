@@ -48,13 +48,8 @@ do
     echo "User '"$USERNAME"' Created"
 done
 
-trap ctrl_c INT
-
-function ctrl_c() {
-    echo -e " Signal Received\nStopping vsftpd.."
-    pgrep vsftpd | xargs kill
-}
+trap "pgrep vsftpd | xargs kill -9" SIGHUP SIGQUIT SIGABRT SIGINT SIGTERM SIGCHLD
 
 echo -e "\nStarting Very Secure File Transfer Protocol Daemon...\n"
 
-/usr/bin/vsftpd & wait
+/usr/bin/vsftpd
