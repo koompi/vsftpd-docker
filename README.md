@@ -12,24 +12,25 @@ This is a micro-service image for VSFTPD.
 
 The following environment variables are used.   
 
-- `WRITE_ENABLE`: Enable or Disable write access to the server. Accepted values are `YES` or `NO` **Default is YES**
 - `FTP_USER_*`: Adds multiple users. Value must be in the form of `username:'hash'`. This requires a hashed password such as the ones created with `mkpasswd -m sha-512`. **Required at least 1**
-- `PASV_MIN_PORT`: Control Passive Mode Minimum Ports. This requires the port mapped out, too, to work. **Default is 50000**
+- `WRITE_ENABLE`: Enable or Disable write access to the server. Accepted values are `YES` or `NO` **Default is YES**
+- `IMPLICIT_SSL`: Enable or Disable IMPLICIT SSL mode. Accepted values are `YES` or `NO` **Default is NO**
+- `LISTEN_PORT`: Control Listening mode Ports. This requires the port mapped out, too, to work. **Default is 21**
+- `PASV_MIN_PORT`: Control Passive Mode Minimum Ports. This requires the port mapped out, too, to work. **Default is 60000**
 - `PASV_MAX_PORT`: Control Passive Mode Maximum Ports. This requires the port mapped out, too, to work. **Default is 60100**
 - `PASV_ADDR_RESOLVE`: Enable or Disable Address Resolve to name. Accepted values are `YES` or `NO` **Default is NO**
 - `PASV_ADDRESS`: Control the address or hostname of the server. **Only Required if PASV_ADDR_RESOLVE is YES**
-- `IMPLICIT_SSL`: Enable or Disable IMPLICIT SSL mode. Accepted values are `YES` or `NO` **Default is NO**
-- `LISTEN_PORT`: Control Listening mode Ports. This requires the port mapped out, too, to work. **Default is 20**
+
 
 The following mounts are used.
 
 - /etc/ssl/certs/vsftpd.crt **Required**
 - /etc/ssl/certs/vsftpd.key **Required**
 - /srv/vsftpd/$USER **Required at least 1 for each user**
+- /var/log **If viewing log is needed**
 
 The following port are used.
 
-- 20 **Required If LISTEN_PORT isn't set**
 - 21 **Required If LISTEN_PORT isn't set**
 - PASV MIN/MAX Ports Range **Required**
 - LISTEN_PORT **Required If set**
