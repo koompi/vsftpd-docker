@@ -19,7 +19,7 @@ The following environment variables are used.
 - `PASV_ADDR_RESOLVE`: Enable or Disable Address Resolve to name. Accepted values are `YES` or `NO` **Default is NO**
 - `PASV_ADDRESS`: Control the address or hostname of the server. **Only Required if PASV_ADDR_RESOLVE is YES**
 - `IMPLICIT_SSL`: Enable or Disable IMPLICIT SSL mode. Accepted values are `YES` or `NO` **Default is NO**
-- `IMPLICIT_SSL_PORT`: Control IMPLICIT SSL mode Ports. This requires the port mapped out, too, to work. **Default is 990 if IMPLICIT_SSL is YES**
+- `LISTEN_PORT`: Control Listening mode Ports. This requires the port mapped out, too, to work. **Default is 20**
 
 The following mounts are used.
 
@@ -29,10 +29,10 @@ The following mounts are used.
 
 The following port are used.
 
-- 20 **Required**
-- 21 **Required**
+- 20 **Required If LISTEN_PORT isn't set**
+- 21 **Required If LISTEN_PORT isn't set**
 - PASV MIN/MAX Ports Range **Required**
-- IMPLICIT_SSL_PORT **Required If set**
+- LISTEN_PORT **Required If set**
 
 ## Usage Examples
 
@@ -64,9 +64,8 @@ isaacjacksonreay/vsftpd:latest
 ...
 ```
 
-## Implicit Example
+## Custom Port Explicit SSL Example
 
-Default Port Example:
 ```
 docker run -it \
 --name vsftpd \
@@ -74,17 +73,17 @@ docker run -it \
 -v `pwd`/vsftpd.pem:/etc/ssl/certs/vsftpd.key \
 -e PASV_MIN_PORT=1500 \
 -e PASV_MAX_PORT=1600 \
+-e LISTEN_PORT=10000 \
 -e FTP_USER_1=isaac:'$6$C138ihonnOEQzW4f$P8ZRSQ2rU8qU.6dUyBcXHj.4piADxEL0mQskpBeBTAtjxBMobTohykzsBG8cYShgu9ciUp59AxDFvsn2asH2X0' \
--e IMPLICIT_SSL=YES \
 -v `pwd`/isaac/:/srv/vsftpd/isaac/isaac \
--p 20-21:20-21 \
 -p 1500-1600:1500-1600 \
--p 990:990 \
+-p 10000:10000 \
 --restart=always \
 isaacjacksonreay/vsftpd:latest
 ```
 
-Custom Port Example:
+## Implicit Example
+
 ```
 docker run -it \
 --name vsftpd \
@@ -94,11 +93,10 @@ docker run -it \
 -e PASV_MAX_PORT=1600 \
 -e FTP_USER_1=isaac:'$6$C138ihonnOEQzW4f$P8ZRSQ2rU8qU.6dUyBcXHj.4piADxEL0mQskpBeBTAtjxBMobTohykzsBG8cYShgu9ciUp59AxDFvsn2asH2X0' \
 -e IMPLICIT_SSL=YES \
--e IMPLICIT_SSL_PORT=9090 \
+-e LISTEN_PORT=990 \
 -v `pwd`/isaac/:/srv/vsftpd/isaac/isaac \
--p 20-21:20-21 \
 -p 1500-1600:1500-1600 \
--p 9090:9090 \
+-p 990:990 \
 --restart=always \
 isaacjacksonreay/vsftpd:latest
 ```
@@ -122,6 +120,7 @@ services:
       - FTP_USER_1=isaac:$$6$$C138ihonnOEQzW4f$$P8ZRSQ2rU8qU.6dUyBcXHj.4piADxEL0mQskpBeBTAtjxBMobTohykzsBG8cYShgu9ciUp59AxDFvsn2asH2X0
       - PASV_MIN_PORT=10000
       - PASV_MAX_PORT=10100
+      - LISTEN_PORT=990
       - IMPLICIT_SSL=YES
 ```
 
